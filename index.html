@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hobby Adventure - What's Your Hobby?</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Baloo 2', cursive;
+            background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            user-select: none;
+        }
+        
+        .btn-3d {
+            transition: all 0.1s;
+            box-shadow: 0 6px 0px rgba(0,0,0,0.2);
+        }
+        .btn-3d:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0px rgba(0,0,0,0.2);
+        }
+        
+        .btn-blue { background-color: #3b82f6; color: white; box-shadow: 0 6px 0px #1d4ed8; }
+        .btn-blue:active { box-shadow: 0 2px 0px #1d4ed8; }
+        
+        .btn-yellow { background-color: #facc15; color: #854d0e; box-shadow: 0 6px 0px #ca8a04; }
+        .btn-yellow:active { box-shadow: 0 2px 0px #ca8a04; }
+        
+        .btn-pink { background-color: #ec4899; color: white; box-shadow: 0 6px 0px #be185d; }
+        .btn-pink:active { box-shadow: 0 2px 0px #be185d; }
+        
+        .btn-green { background-color: #22c55e; color: white; box-shadow: 0 6px 0px #15803d; }
+        .btn-green:active { box-shadow: 0 2px 0px #15803d; }
+
+        .btn-purple { background-color: #a855f7; color: white; box-shadow: 0 6px 0px #7e22ce; }
+        .btn-purple:active { box-shadow: 0 2px 0px #7e22ce; }
+
+        .card {
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border: 4px solid #fff;
+        }
+
+        .emoji-pic {
+            font-size: 5rem;
+            line-height: 1;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
+        }
+
+        .emoji-opt {
+            font-size: 3rem;
+            line-height: 1;
+        }
+
+        /* Animations */
+        @keyframes popIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .animate-pop { animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        
+        @keyframes bounce-subtle {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        .animate-bounce-subtle { animation: bounce-subtle 2s infinite; }
+
+        .hidden-view { display: none !important; }
+
+        #confetti-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        /* Modal Overlay */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 50;
+            backdrop-filter: blur(4px);
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <!-- Confetti Canvas -->
+    <canvas id="confetti-canvas"></canvas>
+
+    <!-- Main Container -->
+    <div id="app" class="max-w-5xl mx-auto p-4 min-h-screen flex flex-col relative">
+        
+        <!-- Header Controls -->
+        <div class="absolute top-4 right-4 z-10 flex gap-2">
+            <button id="btn-sound" class="w-12 h-12 bg-white rounded-full flex items-center justify-center text-2xl shadow-md btn-3d" onclick="toggleSound()">
+                🔊
+            </button>
+            <button id="btn-home" class="w-12 h-12 bg-white rounded-full flex items-center justify-center text-2xl shadow-md btn-3d hidden-view" onclick="goHome()">
+                🏠
+            </button>
+        </div>
+
+        <!-- 1. MENU VIEW -->
+        <div id="view-menu" class="flex-1 flex flex-col items-center justify-center animate-pop">
+            <h1 class="text-5xl md:text-7xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-pink-500 mb-2 text-center drop-shadow-lg">
+                HOBBY ADVENTURE
+            </h1>
+            <h2 class="text-3xl md:text-4xl font-bold text-yellow-500 mb-8 text-center drop-shadow-md">
+                What's your hobby?
+            </h2>
+            
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
+                <div class="bg-white p-4 rounded-3xl shadow-lg border-4 border-blue-300 flex flex-col items-center animate-bounce-subtle" style="animation-delay: 0s;">
+                    <div class="emoji-pic">🏃</div>
+                    <p class="font-bold text-xl text-blue-600 mt-2">running</p>
+                </div>
+                <div class="bg-white p-4 rounded-3xl shadow-lg border-4 border-pink-300 flex flex-col items-center animate-bounce-subtle" style="animation-delay: 0.2s;">
+                    <div class="emoji-pic">🎨</div>
+                    <p class="font-bold text-xl text-pink-600 mt-2">painting</p>
+                </div>
+                <div class="bg-white p-4 rounded-3xl shadow-lg border-4 border-green-300 flex flex-col items-center animate-bounce-subtle" style="animation-delay: 0.4s;">
+                    <div class="emoji-pic">🚶</div>
+                    <p class="font-bold text-xl text-green-600 mt-2">walking</p>
+                </div>
+                <div class="bg-white p-4 rounded-3xl shadow-lg border-4 border-yellow-300 flex flex-col items-center animate-bounce-subtle" style="animation-delay: 0.6s;">
+                    <div class="emoji-pic">🍳</div>
+                    <p class="font-bold text-xl text-yellow-600 mt-2">cooking</p>
+                </div>
+            </div>
+
+            <div class="flex flex-col md:flex-row gap-6">
+                <button class="btn-3d btn-blue text-2xl md:text-3xl px-10 py-4 rounded-full font-bold uppercase tracking-wide" onclick="startGame('individual')">
+                    👤 Individual Mode
+                </button>
+                <button class="btn-3d btn-green text-2xl md:text-3xl px-10 py-4 rounded-full font-bold uppercase tracking-wide" onclick="showTeamSetup()">
+                    👥 Team Mode
+                </button>
+            </div>
+        </div>
+
+        <!-- 2. TEAM SETUP VIEW -->
+        <div id="view-team-setup" class="flex-1 flex flex-col items-center justify-center animate-pop hidden-view">
+            <div class="card p-8 w-full max-w-2xl text-center border-green-400">
+                <h2 class="text-4xl font-bold text-green-600 mb-6">Team Setup / Cài đặt đội chơi</h2>
+                
+                <div class="mb-6">
+                    <label class="text-2xl font-bold text-gray-700 mr-4">Number of Teams:</label>
+                    <select id="team-count" class="text-2xl border-4 border-blue-200 rounded-xl p-2 outline-none" onchange="renderTeamInputs()">
+                        <option value="2">2 Teams</option>
+                        <option value="3">3 Teams</option>
+                    </select>
+                </div>
+
+                <div id="team-inputs" class="flex flex-col gap-4 mb-8">
+                    <!-- Inputs injected here -->
+                </div>
+
+                <div class="flex gap-4 justify-center">
+                    <button class="btn-3d btn-yellow text-2xl px-8 py-3 rounded-full font-bold" onclick="goHome()">Back</button>
+                    <button class="btn-3d btn-green text-2xl px-8 py-3 rounded-full font-bold" onclick="startGame('team')">Start Game</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. GAME VIEW -->
+        <div id="view-game" class="flex-1 flex flex-col animate-pop hidden-view w-full max-w-4xl mx-auto pt-16">
+            
+            <!-- Top Bar: Progress & Score -->
+            <div class="flex justify-between items-end mb-4">
+                <div class="flex-1">
+                    <h3 id="level-title" class="text-2xl font-bold text-purple-600 mb-1">LEVEL 1 - BASIC</h3>
+                    <div class="w-full bg-white rounded-full h-6 border-2 border-gray-200 overflow-hidden relative shadow-inner">
+                        <div id="progress-bar" class="bg-gradient-to-r from-green-400 to-blue-500 h-full w-0 transition-all duration-500"></div>
+                        <span id="progress-text" class="absolute inset-0 flex items-center justify-center text-sm font-bold text-gray-700">0/18</span>
+                    </div>
+                </div>
+                
+                <div id="score-container" class="ml-6 flex gap-4">
+                    <!-- Score boxes injected here based on mode -->
+                </div>
+            </div>
+
+            <!-- Current Turn Indicator (Team Mode) -->
+            <div id="turn-indicator" class="text-center text-2xl font-bold mb-4 py-2 px-6 bg-yellow-300 rounded-full text-yellow-800 shadow-md hidden-view inline-block self-center animate-bounce-subtle">
+                Team 1's Turn!
+            </div>
+
+            <!-- Question Area -->
+            <div class="card flex-1 p-6 md:p-8 flex flex-col items-center justify-center border-blue-400 relative">
+                
+                <!-- Audio Button (if listening task) -->
+                <button id="btn-play-audio" class="absolute top-4 left-4 w-14 h-14 bg-purple-500 text-white rounded-full flex items-center justify-center text-3xl shadow-lg btn-3d hidden-view" onclick="playQuestionAudio()">
+                    🔊
+                </button>
+
+                <!-- Question Image/Context -->
+                <div id="q-context" class="mb-6 text-center">
+                    <div id="q-image-container" class="bg-blue-50 w-48 h-48 rounded-3xl border-4 border-blue-200 flex items-center justify-center mx-auto mb-4 hidden-view shadow-inner">
+                        <span id="q-image" class="emoji-pic">🏃</span>
+                    </div>
+                    <div id="q-situation" class="text-xl font-semibold text-gray-500 mb-2 italic hidden-view">Situation...</div>
+                    <h2 id="q-text" class="text-3xl md:text-4xl font-bold text-gray-800">What hobby is this?</h2>
+                </div>
+
+                <!-- Interactive Area (Options or Word Reorder) -->
+                <div id="q-interactive" class="w-full">
+                    <!-- MCQ Options -->
+                    <div id="q-options" class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-2xl mx-auto">
+                        <!-- Buttons injected here -->
+                    </div>
+
+                    <!-- Word Reorder Area -->
+                    <div id="q-reorder" class="hidden-view w-full flex flex-col items-center gap-6">
+                        <div id="reorder-dropzone" class="min-w-[300px] min-h-[80px] bg-gray-100 border-4 border-dashed border-gray-300 rounded-2xl flex flex-wrap items-center justify-center gap-2 p-4 cursor-pointer" onclick="resetReorder()">
+                            <span class="text-gray-400 text-lg select-none pointer-events-none">Click words below to build sentence (Click here to reset)</span>
+                        </div>
+                        <div id="reorder-words" class="flex flex-wrap gap-4 justify-center">
+                            <!-- Word buttons injected here -->
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- 4. END SCREEN VIEW -->
+        <div id="view-end" class="flex-1 flex flex-col items-center justify-center animate-pop hidden-view">
+            <div class="card p-10 w-full max-w-3xl text-center border-yellow-400 bg-yellow-50">
+                <div class="text-6xl mb-4">🏆</div>
+                <h1 class="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-yellow-500 to-orange-500 mb-6">
+                    Fantastic!
+                </h1>
+                <h2 class="text-3xl font-bold text-purple-600 mb-8" id="end-message">You are a Speaking Champion!</h2>
+                
+                <div id="final-scores" class="flex flex-wrap justify-center gap-6 mb-10 text-2xl">
+                    <!-- Final scores injected here -->
+                </div>
+
+                <button class="btn-3d btn-blue text-3xl px-12 py-4 rounded-full font-bold shadow-lg" onclick="goHome()">
+                    Play Again
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- SPEAKING TIME MODAL -->
+    <div id="modal-speaking" class="modal-overlay hidden-view">
+        <div class="bg-white rounded-3xl p-8 max-w-2xl w-11/12 text-center shadow-2xl border-8 border-pink-400 animate-pop relative">
+            <div class="text-6xl mb-2 text-pink-500 animate-bounce">🎤</div>
+            <h2 class="text-4xl font-extrabold text-pink-500 mb-4 tracking-wider">SPEAKING TIME!</h2>
+            
+            <div class="bg-pink-50 rounded-2xl p-6 mb-6 border-2 border-pink-200">
+                <p id="speak-task" class="text-3xl font-bold text-gray-800"></p>
+            </div>
+
+            <div class="flex gap-4 justify-center mb-8">
+                <button class="btn-3d btn-purple text-xl px-6 py-3 rounded-full font-bold flex items-center gap-2" onclick="playSpeakingModel()">
+                    <span>🔊</span> LISTEN
+                </button>
+                <button class="btn-3d btn-blue text-xl px-6 py-3 rounded-full font-bold flex items-center gap-2" onclick="studentReady()">
+                    <span>🙋</span> I'M READY
+                </button>
+            </div>
+
+            <div class="border-t-4 border-dashed border-gray-200 pt-6 mt-4">
+                <div class="bg-gray-100 p-4 rounded-xl">
+                    <h3 class="text-xl font-bold text-gray-600 mb-3 uppercase">👨‍🏫 Giáo viên xác nhận (Teacher Area)</h3>
+                    <p class="text-sm text-gray-500 mb-4">Học sinh cần đọc to/đóng vai hội thoại. Giáo viên xác nhận để cộng điểm và qua bài.</p>
+                    <div class="flex flex-col md:flex-row gap-4 justify-center">
+                        <button class="btn-3d btn-yellow text-lg px-6 py-3 rounded-xl font-bold flex-1" onclick="trySpeakingAgain()">
+                            ↺ TRY SPEAKING AGAIN<br><span class="text-sm font-normal">(Yêu cầu nói lại)</span>
+                        </button>
+                        <button class="btn-3d btn-green text-lg px-6 py-3 rounded-xl font-bold flex-1" onclick="confirmSpeaking()">
+                            ✔️ CONFIRM SPEAKING<br><span class="text-sm font-normal">(Xác nhận & Cộng điểm)</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SIMPLE FEEDBACK OVERLAY (Correct/Wrong) -->
+    <div id="overlay-feedback" class="modal-overlay hidden-view" style="z-index: 60; background: rgba(255,255,255,0.8);">
+        <div id="feedback-content" class="text-center animate-pop">
+            <div id="feedback-icon" class="text-8xl mb-4">⭐</div>
+            <h2 id="feedback-text" class="text-5xl font-extrabold text-green-500 drop-shadow-md">Great job!</h2>
+        </div>
+    </div>
+
+    <script>
+        // --- GAME DATA ---
+        // Hobbies vocabulary map to emojis for visuals
+        const EMOJI_MAP = {
+            'running': '🏃',
+            'painting': '🎨',
+            'walking': '🚶',
+            'cooking': '🍳'
+        };
+
+        const QUESTIONS = [
+            // LEVEL 1
+            {
+                level: 1, levelName: "LEVEL 1: WORD EXPLORER", type: 'mcq',
+                img: 'running', qText: "What hobby is this?",
+                options: [
+                    { text: 'running', isCorrect: true }, { text: 'painting', isCorrect: false },
+                    { text: 'walking', isCorrect: false }, { text: 'cooking', isCorrect: false }
+                ],
+                speakText: "running", ttsAudio: null
+            },
+            {
+                level: 1, levelName: "LEVEL 1: WORD EXPLORER", type: 'mcq',
+                img: 'painting', qText: "What hobby is this?",
+                options: [
+                    { text: 'walking', isCorrect: false }, { text: 'cooking', isCorrect: false },
+                    { text: 'painting', isCorrect: true }, { text: 'running', isCorrect: false }
+                ],
+                speakText: "painting", ttsAudio: null
+            },
+            {
+                level: 1, levelName: "LEVEL 1: WORD EXPLORER", type: 'mcq',
+                img: 'walking', qText: "What hobby is this?",
+                options: [
+                    { text: 'cooking', isCorrect: false }, { text: 'walking', isCorrect: true },
+                    { text: 'running', isCorrect: false }, { text: 'painting', isCorrect: false }
+                ],
+                speakText: "walking", ttsAudio: null
+            },
+            {
+                level: 1, levelName: "LEVEL 1: WORD EXPLORER", type: 'mcq',
+                img: 'cooking', qText: "What hobby is this?",
+                options: [
+                    { text: 'painting', isCorrect: false }, { text: 'running', isCorrect: false },
+                    { text: 'cooking', isCorrect: true }, { text: 'walking', isCorrect: false }
+                ],
+                speakText: "cooking", ttsAudio: null
+            },
+            {
+                level: 1, levelName: "LEVEL 1: WORD EXPLORER", type: 'mcq',
+                qText: "Word: RUNNING. Choose the correct picture.",
+                options: [
+                    { img: 'running', isCorrect: true }, { img: 'painting', isCorrect: false },
+                    { img: 'walking', isCorrect: false }, { img: 'cooking', isCorrect: false }
+                ],
+                speakText: "I like running.", ttsAudio: null
+            },
+            {
+                level: 1, levelName: "LEVEL 1: WORD EXPLORER", type: 'mcq',
+                qText: "Word: PAINTING. Choose the correct picture.",
+                options: [
+                    { img: 'running', isCorrect: false }, { img: 'painting', isCorrect: true },
+                    { img: 'walking', isCorrect: false }, { img: 'cooking', isCorrect: false }
+                ],
+                speakText: "I like painting.", ttsAudio: null
+            },
+            
+            // LEVEL 2
+            {
+                level: 2, levelName: "LEVEL 2: LISTEN AND SPEAK", type: 'mcq',
+                hasAudio: true, ttsAudio: "I like running.", qText: "Listen and choose the correct picture.",
+                options: [
+                    { img: 'walking', isCorrect: false }, { img: 'cooking', isCorrect: false },
+                    { img: 'running', isCorrect: true }, { img: 'painting', isCorrect: false }
+                ],
+                speakText: "I like running."
+            },
+            {
+                level: 2, levelName: "LEVEL 2: LISTEN AND SPEAK", type: 'mcq',
+                hasAudio: true, ttsAudio: "I like cooking.", qText: "Listen and choose.",
+                options: [
+                    { img: 'running', isCorrect: false }, { img: 'painting', isCorrect: false },
+                    { img: 'cooking', isCorrect: true }, { img: 'walking', isCorrect: false }
+                ],
+                speakText: "I like cooking."
+            },
+            {
+                level: 2, levelName: "LEVEL 2: LISTEN AND SPEAK", type: 'mcq',
+                hasAudio: true, ttsAudio: "What's your hobby? I like painting.", qText: "What does the child like?",
+                options: [
+                    { img: 'running', isCorrect: false }, { img: 'painting', isCorrect: true },
+                    { img: 'walking', isCorrect: false }, { img: 'cooking', isCorrect: false }
+                ],
+                speakText: "I like painting."
+            },
+            {
+                level: 2, levelName: "LEVEL 2: LISTEN AND SPEAK", type: 'mcq',
+                img: 'walking', qText: "What's your hobby?",
+                options: [
+                    { text: 'I like walk.', isCorrect: false }, { text: 'I walking.', isCorrect: false },
+                    { text: 'I like walking.', isCorrect: true }, { text: 'I likes walking.', isCorrect: false }
+                ],
+                speakText: "I like walking."
+            },
+            {
+                level: 2, levelName: "LEVEL 2: LISTEN AND SPEAK", type: 'mcq',
+                img: 'cooking', qText: "Choose the correct answer.",
+                options: [
+                    { text: 'I like running.', isCorrect: false }, { text: 'I like painting.', isCorrect: false },
+                    { text: 'I like walking.', isCorrect: false }, { text: 'I like cooking.', isCorrect: true }
+                ],
+                speakText: "I like cooking."
+            },
+            {
+                level: 2, levelName: "LEVEL 2: LISTEN AND SPEAK", type: 'mcq',
+                img: 'running', qText: "Complete the sentence: 'I like ____.'",
+                options: [
+                    { text: 'walking', isCorrect: false }, { text: 'painting', isCorrect: false },
+                    { text: 'cooking', isCorrect: false }, { text: 'running', isCorrect: true }
+                ],
+                speakText: "I like running."
+            },
+
+            // LEVEL 3
+            {
+                level: 3, levelName: "LEVEL 3: SPEAKING CHAMPION", type: 'mcq',
+                hasAudio: true, ttsAudio: "What's your hobby? I like walking.", qText: "What hobby do you hear?",
+                options: [
+                    { img: 'running', isCorrect: false }, { img: 'painting', isCorrect: false },
+                    { img: 'walking', isCorrect: true }, { img: 'cooking', isCorrect: false }
+                ],
+                speakText: "Roleplay: \nA: What's your hobby?\nB: I like walking."
+            },
+            {
+                level: 3, levelName: "LEVEL 3: SPEAKING CHAMPION", type: 'mcq',
+                img: 'running', situation: "You want to ask your friend about their hobby.", qText: "Which question should you ask?",
+                options: [
+                    { text: 'I like walking.', isCorrect: false }, { text: "What's your hobby?", isCorrect: true },
+                    { text: 'I like cooking.', isCorrect: false }, { text: 'running.', isCorrect: false }
+                ],
+                speakText: "Roleplay:\nStudent A: What's your hobby?\nStudent B: I like running."
+            },
+            {
+                level: 3, levelName: "LEVEL 3: SPEAKING CHAMPION", type: 'mcq',
+                img: 'painting', situation: "Your friend asks, \"What's your hobby?\"", qText: "Choose the correct answer.",
+                options: [
+                    { text: 'I like cooking.', isCorrect: false }, { text: 'I like walking.', isCorrect: false },
+                    { text: 'I like painting.', isCorrect: true }, { text: 'I like running.', isCorrect: false }
+                ],
+                speakText: "I like painting."
+            },
+            {
+                level: 3, levelName: "LEVEL 3: SPEAKING CHAMPION", type: 'mcq',
+                qText: "Who is speaking?", situation: "Child A: 🍳 (Cooking)  |  Child B: 🚶 (Walking)",
+                hasAudio: true, ttsAudio: "I like cooking.",
+                options: [
+                    { text: 'Child A', isCorrect: true }, { text: 'Child B', isCorrect: false }
+                ],
+                speakText: "Roleplay:\nA: What's your hobby?\nB: I like cooking."
+            },
+            {
+                level: 3, levelName: "LEVEL 3: SPEAKING CHAMPION", type: 'order',
+                img: 'cooking', qText: "Put the words in the correct order.",
+                words: ['cooking.', 'like', 'I'],
+                correctOrder: 'I like cooking.',
+                speakText: "Roleplay:\nA: What's your hobby?\nB: I like cooking."
+            },
+            {
+                level: 3, levelName: "LEVEL 3: SPEAKING CHAMPION", type: 'mcq',
+                img: 'walking', qText: "Choose the conversation that matches the picture.",
+                options: [
+                    { text: "A: What's your hobby?\nB: I like running.", isCorrect: false },
+                    { text: "A: What's your hobby?\nB: I like walking.", isCorrect: true },
+                    { text: "A: What's your hobby?\nB: I like painting.", isCorrect: false },
+                    { text: "A: What's your hobby?\nB: I like cooking.", isCorrect: false }
+                ],
+                speakText: "Perform conversation without reading!\nA: What's your hobby?\nB: I like walking."
+            }
+        ];
+
+        // --- STATE ---
+        let gameState = {
+            mode: 'individual', // 'individual' or 'team'
+            teams: [],
+            currentTurn: 0,
+            qIndex: 0,
+            attempts: 0,
+            tempPoints: 0,
+            soundEnabled: true,
+            audioCtx: null
+        };
+        let reorderedWords = [];
+
+        // --- AUDIO / SFX SYSTEM ---
+        function toggleSound() {
+            gameState.soundEnabled = !gameState.soundEnabled;
+            document.getElementById('btn-sound').innerHTML = gameState.soundEnabled ? '🔊' : '🔇';
+        }
+
+        function initAudio() {
+            if(!gameState.audioCtx) {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                gameState.audioCtx = new AudioContext();
+            }
+            if(gameState.audioCtx.state === 'suspended') {
+                gameState.audioCtx.resume();
+            }
+            // Init speech synthesis voices
+            window.speechSynthesis.getVoices();
+        }
+
+        function playTone(freq, type, duration, vol=0.1) {
+            if(!gameState.soundEnabled || !gameState.audioCtx) return;
+            const osc = gameState.audioCtx.createOscillator();
+            const gain = gameState.audioCtx.createGain();
+            osc.type = type;
+            osc.frequency.setValueAtTime(freq, gameState.audioCtx.currentTime);
+            gain.gain.setValueAtTime(vol, gameState.audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, gameState.audioCtx.currentTime + duration);
+            osc.connect(gain);
+            gain.connect(gameState.audioCtx.destination);
+            osc.start();
+            osc.stop(gameState.audioCtx.currentTime + duration);
+        }
+
+        function playCorrectSound() {
+            playTone(523.25, 'sine', 0.1); // C5
+            setTimeout(() => playTone(659.25, 'sine', 0.2), 100); // E5
+            setTimeout(() => playTone(783.99, 'sine', 0.3), 200); // G5
+        }
+
+        function playWrongSound() {
+            playTone(300, 'sawtooth', 0.2, 0.05);
+            setTimeout(() => playTone(250, 'sawtooth', 0.3, 0.05), 150);
+        }
+
+        function playCheerSound() {
+            // Simulated cheer using rapid random noise/chords
+            if(!gameState.soundEnabled || !gameState.audioCtx) return;
+            for(let i=0; i<10; i++) {
+                setTimeout(() => playTone(400 + Math.random()*400, 'triangle', 0.5, 0.05), i*50);
+            }
+        }
+
+        function speakText(text) {
+            if(!gameState.soundEnabled) return;
+            window.speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'en-GB';
+            utterance.rate = 0.85; // Slow down slightly for 3rd graders
+            
+            // Try to find a UK voice
+            const voices = window.speechSynthesis.getVoices();
+            const ukVoice = voices.find(v => v.lang === 'en-GB' || v.lang === 'en_GB');
+            if(ukVoice) utterance.voice = ukVoice;
+            
+            window.speechSynthesis.speak(utterance);
+        }
+
+        function playQuestionAudio() {
+            const q = QUESTIONS[gameState.qIndex];
+            if(q.hasAudio && q.ttsAudio) {
+                speakText(q.ttsAudio);
+            }
+        }
+
+        function playSpeakingModel() {
+            const q = QUESTIONS[gameState.qIndex];
+            // Remove 'Roleplay: ' text for audio
+            let txt = q.speakText.replace(/Roleplay:/g, '').replace(/Student A:|Student B:|A:|B:|Perform conversation without reading!/g, '');
+            speakText(txt.trim());
+        }
+
+        // --- NAVIGATION & UI UPDATES ---
+        function switchView(viewId) {
+            ['view-menu', 'view-team-setup', 'view-game', 'view-end'].forEach(id => {
+                document.getElementById(id).classList.add('hidden-view');
+            });
+            document.getElementById(viewId).classList.remove('hidden-view');
+            document.getElementById('btn-home').classList.toggle('hidden-view', viewId === 'view-menu');
+        }
+
+        function goHome() {
+            window.speechSynthesis.cancel();
+            switchView('view-menu');
+        }
+
+        // --- TEAM SETUP ---
+        function showTeamSetup() {
+            switchView('view-team-setup');
+            renderTeamInputs();
+        }
+
+        function renderTeamInputs() {
+            const count = parseInt(document.getElementById('team-count').value);
+            const container = document.getElementById('team-inputs');
+            container.innerHTML = '';
+            for(let i=1; i<=count; i++) {
+                container.innerHTML += `
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 rounded-full bg-blue-500 text-white flex items-center justify-center font-bold text-xl">${i}</div>
+                        <input type="text" id="team-name-${i}" placeholder="Team ${i} Name" value="Team ${i}" class="flex-1 border-4 border-blue-200 rounded-xl p-3 text-xl font-bold text-gray-700 outline-none focus:border-blue-400">
+                    </div>
+                `;
+            }
+        }
+
+        // --- GAME LOGIC ---
+        function startGame(mode) {
+            initAudio();
+            gameState.mode = mode;
+            gameState.qIndex = 0;
+            gameState.currentTurn = 0;
+            gameState.teams = [];
+
+            if(mode === 'team') {
+                const count = parseInt(document.getElementById('team-count').value);
+                for(let i=1; i<=count; i++) {
+                    const name = document.getElementById(`team-name-${i}`).value.trim() || `Team ${i}`;
+                    gameState.teams.push({ name: name, score: 0 });
+                }
+            } else {
+                gameState.teams.push({ name: 'Player 1', score: 0 });
+            }
+
+            switchView('view-game');
+            updateScoreBoard();
+            loadQuestion();
+        }
+
+        function updateScoreBoard() {
+            const container = document.getElementById('score-container');
+            container.innerHTML = '';
+            
+            const colors = ['bg-blue-500', 'bg-pink-500', 'bg-green-500'];
+            
+            gameState.teams.forEach((t, index) => {
+                const isActive = (gameState.mode === 'team' && index === gameState.currentTurn);
+                const border = isActive ? 'border-4 border-yellow-400 scale-110 shadow-xl' : 'border-2 border-white opacity-80';
+                
+                container.innerHTML += `
+                    <div class="${colors[index % colors.length]} text-white px-4 py-2 rounded-2xl flex flex-col items-center transition-all ${border}">
+                        <span class="text-xs md:text-sm font-bold truncate max-w-[80px]">${t.name}</span>
+                        <span class="text-xl md:text-2xl font-extrabold" id="score-${index}">${t.score}</span>
+                    </div>
+                `;
+            });
+
+            const indicator = document.getElementById('turn-indicator');
+            if(gameState.mode === 'team') {
+                indicator.classList.remove('hidden-view');
+                indicator.innerText = `${gameState.teams[gameState.currentTurn].name}'s Turn!`;
+            } else {
+                indicator.classList.add('hidden-view');
+            }
+
+            // Progress bar
+            const pct = (gameState.qIndex / QUESTIONS.length) * 100;
+            document.getElementById('progress-bar').style.width = `${pct}%`;
+            document.getElementById('progress-text').innerText = `${gameState.qIndex} / ${QUESTIONS.length}`;
+        }
+
+        function loadQuestion() {
+            const q = QUESTIONS[gameState.qIndex];
+            gameState.attempts = 0;
+            gameState.tempPoints = 0;
+            reorderedWords = [];
+
+            // UI Resets
+            document.getElementById('level-title').innerText = q.levelName;
+            document.getElementById('q-text').innerText = q.qText;
+            
+            // Audio button
+            const audioBtn = document.getElementById('btn-play-audio');
+            if(q.hasAudio) {
+                audioBtn.classList.remove('hidden-view');
+                // Auto play on load if not level 1? Actually better let them click to avoid spam.
+            } else {
+                audioBtn.classList.add('hidden-view');
+            }
+
+            // Situation / Context text
+            const sit = document.getElementById('q-situation');
+            if(q.situation) {
+                sit.innerText = q.situation;
+                sit.classList.remove('hidden-view');
+            } else {
+                sit.classList.add('hidden-view');
+            }
+
+            // Image
+            const imgCont = document.getElementById('q-image-container');
+            const imgEl = document.getElementById('q-image');
+            if(q.img) {
+                imgCont.classList.remove('hidden-view');
+                imgEl.innerText = EMOJI_MAP[q.img] || '❓';
+            } else {
+                imgCont.classList.add('hidden-view');
+            }
+
+            // Interactive area
+            const optCont = document.getElementById('q-options');
+            const reorderCont = document.getElementById('q-reorder');
+            optCont.innerHTML = '';
+            
+            if(q.type === 'mcq') {
+                optCont.classList.remove('hidden-view');
+                reorderCont.classList.add('hidden-view');
+                
+                const btnColors = ['btn-blue', 'btn-pink', 'btn-yellow', 'btn-green'];
+                q.options.forEach((opt, idx) => {
+                    const btn = document.createElement('button');
+                    btn.className = `btn-3d ${btnColors[idx%4]} p-4 rounded-2xl flex items-center justify-center min-h-[80px] w-full`;
+                    btn.onclick = () => checkAnswer(opt.isCorrect);
+                    
+                    if(opt.img) {
+                        btn.innerHTML = `<span class="emoji-opt drop-shadow-md">${EMOJI_MAP[opt.img]}</span>`;
+                    } else {
+                        // Preformat multiline options
+                        const textHTML = opt.text.replace(/\n/g, '<br>');
+                        btn.innerHTML = `<span class="text-xl md:text-2xl font-bold leading-tight">${textHTML}</span>`;
+                    }
+                    optCont.appendChild(btn);
+                });
+            } else if (q.type === 'order') {
+                optCont.classList.add('hidden-view');
+                reorderCont.classList.remove('hidden-view');
+                renderReorder(q.words);
+            }
+        }
+
+        // --- REORDER LOGIC ---
+        function renderReorder(words) {
+            const dropzone = document.getElementById('reorder-dropzone');
+            const wordContainer = document.getElementById('reorder-words');
+            
+            // Check if dropzone has children besides the placeholder
+            dropzone.innerHTML = reorderedWords.length === 0 
+                ? '<span class="text-gray-400 text-lg select-none pointer-events-none">Click words below to build sentence (Click here to reset)</span>'
+                : '';
+
+            reorderedWords.forEach((w, idx) => {
+                const btn = document.createElement('div');
+                btn.className = 'bg-white border-2 border-blue-400 text-blue-600 font-bold text-xl px-4 py-2 rounded-xl shadow-sm cursor-pointer hover:bg-blue-50';
+                btn.innerText = w;
+                // Click to remove from dropzone
+                btn.onclick = (e) => { e.stopPropagation(); removeReorderWord(idx); };
+                dropzone.appendChild(btn);
+            });
+
+            wordContainer.innerHTML = '';
+            // Get available words (those not in reorderedWords)
+            let availableWords = [...words];
+            reorderedWords.forEach(rw => {
+                const i = availableWords.indexOf(rw);
+                if(i > -1) availableWords.splice(i, 1);
+            });
+
+            // Shuffle display of available words (simple approach)
+            // Just display remaining
+            words.forEach(w => {
+                const countInReorder = reorderedWords.filter(x => x === w).length;
+                const countInTotal = words.filter(x => x === w).length;
+                
+                if(countInReorder < countInTotal) {
+                    const btn = document.createElement('button');
+                    btn.className = 'btn-3d btn-purple text-2xl font-bold px-6 py-3 rounded-xl';
+                    btn.innerText = w;
+                    btn.onclick = () => addReorderWord(w);
+                    wordContainer.appendChild(btn);
+                }
+            });
+
+            // Auto check if all words used
+            if(reorderedWords.length === words.length) {
+                const answer = reorderedWords.join(' ');
+                checkAnswer(answer === QUESTIONS[gameState.qIndex].correctOrder);
+            }
+        }
+
+        function addReorderWord(word) {
+            reorderedWords.push(word);
+            renderReorder(QUESTIONS[gameState.qIndex].words);
+        }
+        
+        function removeReorderWord(index) {
+            reorderedWords.splice(index, 1);
+            renderReorder(QUESTIONS[gameState.qIndex].words);
+        }
+
+        function resetReorder() {
+            reorderedWords = [];
+            renderReorder(QUESTIONS[gameState.qIndex].words);
+        }
+
+        // --- ANSWER CHECKING ---
+        function checkAnswer(isCorrect) {
+            if(isCorrect) {
+                playCorrectSound();
+                showFeedback(true);
+                // Calculate base points
+                gameState.tempPoints = (gameState.attempts === 0) ? 10 : 5;
+                
+                setTimeout(() => {
+                    hideFeedback();
+                    showSpeakingTime();
+                }, 1500);
+            } else {
+                playWrongSound();
+                gameState.attempts++;
+                showFeedback(false);
+                setTimeout(hideFeedback, 1500);
+                if(QUESTIONS[gameState.qIndex].type === 'order') {
+                    resetReorder();
+                }
+            }
+        }
+
+        function showFeedback(isCorrect) {
+            const overlay = document.getElementById('overlay-feedback');
+            const icon = document.getElementById('feedback-icon');
+            const text = document.getElementById('feedback-text');
+            const content = document.getElementById('feedback-content');
+            
+            overlay.classList.remove('hidden-view');
+            
+            // Re-trigger animation
+            content.classList.remove('animate-pop');
+            void content.offsetWidth;
+            content.classList.add('animate-pop');
+
+            if(isCorrect) {
+                const positiveMsgs = ["Great job!", "Well done!", "Awesome!", "Perfect!"];
+                icon.innerText = "⭐";
+                text.innerText = positiveMsgs[Math.floor(Math.random()*positiveMsgs.length)];
+                text.className = "text-5xl font-extrabold text-green-500 drop-shadow-md";
+                fireConfetti(50);
+            } else {
+                icon.innerText = "😅";
+                text.innerText = "Try again!";
+                text.className = "text-5xl font-extrabold text-red-500 drop-shadow-md";
+            }
+        }
+
+        function hideFeedback() {
+            document.getElementById('overlay-feedback').classList.add('hidden-view');
+        }
+
+        // --- SPEAKING PHASE ---
+        function showSpeakingTime() {
+            const modal = document.getElementById('modal-speaking');
+            const q = QUESTIONS[gameState.qIndex];
+            
+            // Format speak text (handle line breaks for roleplay)
+            document.getElementById('speak-task').innerHTML = q.speakText.replace(/\n/g, '<br>');
+            
+            modal.classList.remove('hidden-view');
+        }
+
+        function studentReady() {
+            // Visual feedback that student clicked ready
+            // Doesn't proceed game, just a cue for teacher
+            const btn = document.querySelector('#modal-speaking .btn-blue');
+            const orig = btn.innerHTML;
+            btn.innerHTML = "<span>👂</span> LISTENING...";
+            btn.classList.replace('btn-blue', 'btn-yellow');
+            setTimeout(() => {
+                btn.innerHTML = orig;
+                btn.classList.replace('btn-yellow', 'btn-blue');
+            }, 2000);
+        }
+
+        function trySpeakingAgain() {
+            playWrongSound();
+            const box = document.getElementById('speak-task');
+            box.parentElement.classList.add('bg-red-50', 'border-red-300');
+            box.parentElement.classList.remove('bg-pink-50', 'border-pink-200');
+            setTimeout(() => {
+                box.parentElement.classList.remove('bg-red-50', 'border-red-300');
+                box.parentElement.classList.add('bg-pink-50', 'border-pink-200');
+            }, 1000);
+        }
+
+        function confirmSpeaking() {
+            playCheerSound();
+            document.getElementById('modal-speaking').classList.add('hidden-view');
+            
+            // Add points (Temp + Speaking Bonus)
+            const totalPoints = gameState.tempPoints + 5; // +5 for speaking
+            gameState.teams[gameState.currentTurn].score += totalPoints;
+            
+            // Fire large confetti
+            fireConfetti(150);
+
+            setTimeout(() => {
+                nextQuestion();
+            }, 1000);
+        }
+
+        function nextQuestion() {
+            window.speechSynthesis.cancel();
+            gameState.qIndex++;
+            
+            // Next Team's turn
+            if(gameState.mode === 'team') {
+                gameState.currentTurn = (gameState.currentTurn + 1) % gameState.teams.length;
+            }
+
+            if(gameState.qIndex >= QUESTIONS.length) {
+                endGame();
+            } else {
+                updateScoreBoard();
+                loadQuestion();
+            }
+        }
+
+        // --- END GAME ---
+        function endGame() {
+            switchView('view-end');
+            playCheerSound();
+            fireConfetti(300);
+            setInterval(() => fireConfetti(50), 2000); // keep firing
+            
+            document.getElementById('progress-bar').style.width = `100%`;
+            document.getElementById('progress-text').innerText = `${QUESTIONS.length} / ${QUESTIONS.length}`;
+
+            const scoresContainer = document.getElementById('final-scores');
+            scoresContainer.innerHTML = '';
+            
+            // Sort teams by score desc
+            const sortedTeams = [...gameState.teams].sort((a,b) => b.score - a.score);
+            
+            if(gameState.mode === 'team') {
+                document.getElementById('end-message').innerText = `${sortedTeams[0].name} Wins!`;
+                
+                sortedTeams.forEach((t, i) => {
+                    scoresContainer.innerHTML += `
+                        <div class="bg-white px-8 py-4 rounded-3xl shadow-lg border-4 ${i===0 ? 'border-yellow-400 scale-110 z-10' : 'border-gray-200'}">
+                            <div class="text-sm font-bold text-gray-500 uppercase">Rank ${i+1}</div>
+                            <div class="text-2xl font-black text-gray-800">${t.name}</div>
+                            <div class="text-4xl font-black text-blue-600">${t.score} <span class="text-xl">pts</span></div>
+                        </div>
+                    `;
+                });
+            } else {
+                document.getElementById('end-message').innerText = `You are a Speaking Champion!`;
+                scoresContainer.innerHTML = `
+                    <div class="bg-white px-10 py-6 rounded-3xl shadow-xl border-4 border-green-400 transform scale-110">
+                        <div class="text-xl font-bold text-gray-500 uppercase">Total Score</div>
+                        <div class="text-6xl font-black text-green-500">${sortedTeams[0].score}</div>
+                    </div>
+                `;
+            }
+        }
+
+        // --- LIGHTWEIGHT CONFETTI SYSTEM ---
+        const canvas = document.getElementById('confetti-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        function fireConfetti(amount) {
+            const colors = ['#3b82f6', '#ec4899', '#22c55e', '#facc15', '#a855f7'];
+            for(let i=0; i<amount; i++) {
+                particles.push({
+                    x: canvas.width / 2,
+                    y: canvas.height / 2 + 100,
+                    r: Math.random() * 6 + 4,
+                    dx: Math.random() * 20 - 10,
+                    dy: Math.random() * -20 - 5,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    tilt: Math.random() * 10 - 5,
+                    tiltAngle: 0,
+                    tiltAngleInc: (Math.random() * 0.07) + 0.05
+                });
+            }
+        }
+
+        function animateConfetti() {
+            requestAnimationFrame(animateConfetti);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            for(let i=0; i<particles.length; i++) {
+                let p = particles[i];
+                p.tiltAngle += p.tiltAngleInc;
+                p.y += (Math.cos(p.tiltAngle) + 1 + p.r / 2) / 2;
+                p.x += Math.sin(p.tiltAngle) * 2;
+                p.dy += 0.2; // gravity
+                p.x += p.dx;
+                p.y += p.dy;
+
+                ctx.beginPath();
+                ctx.lineWidth = p.r;
+                ctx.strokeStyle = p.color;
+                ctx.moveTo(p.x + p.tilt + p.r, p.y);
+                ctx.lineTo(p.x + p.tilt, p.y + p.tilt + p.r);
+                ctx.stroke();
+                
+                // Remove if off screen
+                if(p.y > canvas.height) {
+                    particles.splice(i, 1);
+                    i--;
+                }
+            }
+        }
+        animateConfetti();
+
+    </script>
+</body>
+</html>
